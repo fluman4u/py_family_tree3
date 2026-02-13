@@ -1,37 +1,114 @@
-# py_family_tree3
+# 族谱可视化系统
 
-#### 介绍
-族谱可视化工具
+一个符合软件工程规范的族谱可视化软件，支持 CSV 数据维护、Web 可视化、行辈自动标注、迁徙时间轴分析，可打包为桌面应用。
 
-#### 软件架构
-软件架构说明
+## 项目特点
 
+- **人工可维护**：CSV 格式，方便编辑
+- **严格校验**：WBS 编码、世代关系自动校验
+- **交互可视化**：彩色族谱图，支持拖拽缩放
+- **行辈系统**：自动根据世代标注行辈字
+- **迁徙分析**：地域迁徙时间轴
+- **桌面应用**：可打包为独立 EXE
 
-#### 安装教程
+## 快速开始
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+### 1. 安装依赖
 
-#### 使用说明
+```bash
+pip install -r requirements.txt
+```
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+### 2. 准备数据
 
-#### 参与贡献
+编辑 `data/family.csv` 录入族谱数据，或运行生成随机测试数据：
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+```bash
+python src/generator.py
+```
 
+### 3. 运行命令行版本
 
-#### 特技
+```bash
+python app.py
+```
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+生成 `family.html`，用浏览器打开查看。
+
+### 4. 运行 Web 版本
+
+```bash
+python web/app.py
+```
+
+浏览器打开 `http://127.0.0.1:5000`，可选择根节点和展开层数。
+
+### 5. 打包桌面应用
+
+```bash
+pyinstaller --onefile desktop/main.py
+```
+
+生成 `dist/族谱可视化系统.exe`，双击即可运行。
+
+## 项目结构
+
+```
+family_tree/
+├── data/
+│   ├── family.csv          # 族谱数据
+│   └── lineage.yaml        # 行辈配置
+├── src/
+│   ├── model.py            # 数据模型
+│   ├── parser.py           # CSV 解析
+│   ├── validate.py         # 数据校验
+│   ├── tree.py             # 树构建
+│   ├── filter.py           # 过滤功能
+│   ├── expand.py           # 子树展开
+│   ├── visualize.py        # 可视化
+│   ├── lineage.py          # 行辈系统
+│   ├── migration.py        # 迁徙时间轴
+│   └── generator.py        # 随机数据生成
+├── web/
+│   ├── app.py              # Flask 应用
+│   └── templates/
+│       └── index.html      # Web 页面
+├── desktop/
+│   └── main.py             # 桌面入口
+├── docs/
+│   └── DESIGN.md           # 设计文档
+├── app.py                  # 命令行入口
+├── requirements.txt
+└── README.md
+```
+
+## CSV 数据格式
+
+```csv
+id,parent_id,wbs,name,gender,birth_year,death_year,generation,clan_name,location,note
+1,,1,张始祖,M,1800,1870,1,张氏,陕西西安,始祖
+2,1,1.1,张一,M,1825,1890,2,张氏,陕西西安,
+```
+
+## 行辈配置
+
+编辑 `data/lineage.yaml`：
+
+```yaml
+clan_name: 张氏
+lineage_poem:
+  - 忠
+  - 厚
+  - 传
+  - 家
+  - 久
+  - 诗
+  - 书
+  - 继
+  - 世
+  - 长
+```
+
+## 许可证
+
+MIT License

@@ -1,0 +1,7 @@
+pyvis
+networkx
+flask
+pyyaml
+pyinstaller
+selenium
+pillow
