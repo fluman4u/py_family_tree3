@@ -24,7 +24,7 @@ data/family.csv
 | id         | int | 是   | 唯一标识符，必须唯一           | 1     |
 | wbs        | str | 是   | WBS 编码，表示层级关系        | 1.1.1 |
 | name       | str | 是   | 姓名                   | 张三    |
-| parent_id  | int | 否   | 父节点 ID（由系统自动推导，无需填写） | -     |
+| parent_id  | int | 否   | 兼容字段；推荐不填写，系统以 WBS 推导为准 | -     |
 | gender     | str | 否   | 性别，M=男，F=女           | M     |
 | birth_year | int | 否   | 出生年份                 | 1850  |
 | death_year | int | 否   | 逝世年份                 | 1920  |
@@ -186,10 +186,11 @@ id,wbs,name,gender,birth_year,death_year,generation,clan_name,location,note
 错误：Line X: duplicated wbs 1.1
 ```
 
-#### 2.6.4 ID 格式校验
+#### 2.6.4 整数字段格式校验
 
 ```
-错误：Line X: id must be integer
+错误：Line X: field 'id' must be integer, got 'abc'
+错误：Line X: field 'generation' must be integer, got '三'
 ```
 
 #### 2.6.5 父节点存在性校验
@@ -210,6 +211,19 @@ id,wbs,name,gender,birth_year,death_year,generation,clan_name,location,note
 错误：WBS-parent mismatch: 1.3 not under 1.1
 ```
 
+#### 2.6.8 WBS 格式校验
+
+```
+错误：Line X: invalid wbs format '1..2'; expected digits separated by '\.'
+错误：Line X: invalid wbs segment with leading zero in '1.01'
+```
+
+#### 2.6.9 未知列校验
+
+```
+错误：CSV contains unknown columns: ['foo']
+```
+
 ### 2.7 空值处理
 
 以下值会被视为空值（null）：
@@ -222,6 +236,18 @@ id,wbs,name,gender,birth_year,death_year,generation,clan_name,location,note
 | `None` | None |
 | `null` | None |
 | `NULL` | None |
+
+
+### 2.8 默认测试数据约束（当前仓库）
+
+`data/family.csv` 当前采用如下测试数据约束：
+
+- 最大世代：10 代
+- 第 2~10 代：每代同父节点下均为 2~3 个兄弟节点（当前为 3）
+- `generation` 字段与 WBS 深度一致
+- 新增 `1.3` 支系并连续拓展到第 10 代；其中 `1.3.3` 支链延伸至第 10 代，且每代最右端节点随机增加兄弟节点（分支宽度不固定）
+
+该数据用于覆盖深层树构建、代际筛选和可视化同代分支展示（含多分支深链与随机分叉宽度场景）。
 
 ## 3. 行辈配置格式 (YAML)
 

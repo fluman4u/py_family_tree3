@@ -1,36 +1,30 @@
-# py_family_tree3
+# Family Tree Visualization System
 
-#### Description
-族谱可视化工具
+A Python-based family tree visualization project with CSV-driven data management, validation, web rendering, lineage annotation, and migration timeline analysis.
 
-#### Software Architecture
-Software architecture description
+## Quick Start
 
-#### Installation
+```bash
+pip install -r requirements.txt
+python app.py          # CLI mode, outputs family.html
+python web/app.py      # Web mode at http://127.0.0.1:5000
+pytest -q              # Run regression tests
+```
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+## Key Updates in Current Version
 
-#### Instructions
+- Generator now uses monotonic ID allocation to avoid duplicate IDs.
+- `build_tree` is idempotent and safe for repeated calls.
+- CSV parser now validates unknown columns, WBS format, and integer fields more strictly.
+- Web layer validates `depth` (`0~10`) and uses per-request graph file names to avoid overwrite conflicts.
+- Added regression tests under `tests/`.
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+## Data Notes
 
-#### Contribution
+- Required CSV columns: `id`, `wbs`, `name`.
+- `parent_id` is optional and treated as a compatibility column; parent relation is inferred from `wbs`.
+- Current sample dataset (`data/family.csv`) is expanded to 10 generations: branch `1.1` keeps 3 siblings per generation (gen2~gen10), and branch `1.3` is also extended continuously to generation 10; specifically, `1.3.3` now reaches generation 10 and adds random sibling nodes on the rightmost node per generation.
 
-1.  Fork the repository
-2.  Create Feat_xxx branch
-3.  Commit your code
-4.  Create Pull Request
+## License
 
-
-#### Gitee Feature
-
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+MIT
