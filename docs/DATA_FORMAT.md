@@ -24,7 +24,7 @@ data/family.csv
 | id         | int | 是   | 唯一标识符，必须唯一           | 1     |
 | wbs        | str | 是   | WBS 编码，表示层级关系        | 1.1.1 |
 | name       | str | 是   | 姓名                   | 张三    |
-| parent_id  | int | 否   | 父节点 ID（由系统自动推导，无需填写） | -     |
+| parent_id  | int | 否   | 兼容字段；推荐不填写，系统以 WBS 推导为准 | -     |
 | gender     | str | 否   | 性别，M=男，F=女           | M     |
 | birth_year | int | 否   | 出生年份                 | 1850  |
 | death_year | int | 否   | 逝世年份                 | 1920  |
@@ -186,10 +186,11 @@ id,wbs,name,gender,birth_year,death_year,generation,clan_name,location,note
 错误：Line X: duplicated wbs 1.1
 ```
 
-#### 2.6.4 ID 格式校验
+#### 2.6.4 整数字段格式校验
 
 ```
-错误：Line X: id must be integer
+错误：Line X: field 'id' must be integer, got 'abc'
+错误：Line X: field 'generation' must be integer, got '三'
 ```
 
 #### 2.6.5 父节点存在性校验
@@ -208,6 +209,19 @@ id,wbs,name,gender,birth_year,death_year,generation,clan_name,location,note
 
 ```
 错误：WBS-parent mismatch: 1.3 not under 1.1
+```
+
+#### 2.6.8 WBS 格式校验
+
+```
+错误：Line X: invalid wbs format '1..2'; expected digits separated by '\.'
+错误：Line X: invalid wbs segment with leading zero in '1.01'
+```
+
+#### 2.6.9 未知列校验
+
+```
+错误：CSV contains unknown columns: ['foo']
 ```
 
 ### 2.7 空值处理
