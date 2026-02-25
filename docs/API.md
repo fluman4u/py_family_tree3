@@ -171,6 +171,8 @@ def build_tree(persons: Dict[int, Person]) -> List[Person]
 | ------------ | ----- |
 | List[Person] | 根节点列表 |
 
+**行为说明**：该函数是幂等的；对同一 `persons` 重复调用不会重复追加子节点。
+
 **示例**：
 
 ```python
@@ -227,7 +229,7 @@ def filter_subtree(
 | ---------- | ---------------------- |
 | ValueError | 未提供 root_id 或 root_wbs |
 | ValueError | 指定的 WBS 不存在            |
-| KeyError   | 指定的 ID 不存在             |
+| ValueError | 指定的 ID 不存在             |
 
 **示例**：
 
@@ -698,3 +700,10 @@ except ValueError as e:
 except Exception as e:
     print(f"未知错误: {e}")
 ```
+
+
+### 3.4 Web 参数校验（web/app.py）
+
+- `depth` 必须为整数，且范围为 `0~10`。
+- 非法输入时返回页面并展示错误信息，不会导致服务崩溃。
+- POST 生成图文件使用 `family_<uuid>.html`，避免多请求覆盖同一静态文件。

@@ -76,8 +76,10 @@ family_tree/
 ├── desktop/
 │   └── main.py             # 桌面入口
 ├── docs/
-│   └── DESIGN.md           # 设计文档
+│   ├── DESIGN.md           # 设计文档
+│   └── CODE_REVIEW_REPORT.md # 代码审查与修复建议
 ├── app.py                  # 命令行入口
+├── tests/                 # pytest 回归测试
 ├── requirements.txt
 └── README.md
 ```
@@ -85,10 +87,12 @@ family_tree/
 ## CSV 数据格式
 
 ```csv
-id,parent_id,wbs,name,gender,birth_year,death_year,generation,clan_name,location,note
-1,,1,张始祖,M,1800,1870,1,张氏,陕西西安,始祖
-2,1,1.1,张一,M,1825,1890,2,张氏,陕西西安,
+id,wbs,name,gender,birth_year,death_year,generation,clan_name,location,note
+1,1,张始祖,M,1800,1870,1,张氏,陕西西安,始祖
+2,1.1,张一,M,1825,1890,2,张氏,陕西西安,
 ```
+
+说明：`parent_id` 由系统根据 `wbs` 自动推导，CSV 中无需维护。解析器会严格校验必填列、未知列与 WBS 格式。
 
 ## 行辈配置
 
@@ -112,3 +116,14 @@ lineage_poem:
 ## 许可证
 
 MIT License
+
+
+## 测试
+
+执行回归测试：
+
+```bash
+pytest -q
+```
+
+当前项目已包含 `tests/` 目录，覆盖生成器 ID 唯一性、建树幂等性、过滤边界、解析器校验与 Web 参数校验。
