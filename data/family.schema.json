@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Family CSV Row Schema",
+  "type": "object",
+  "required": ["id", "wbs", "name"],
+  "properties": {
+    "id": {"type": "integer", "minimum": 1},
+    "wbs": {"type": "string", "pattern": "^\\d+(?:\\.\\d+)*$"},
+    "name": {"type": "string", "minLength": 1},
+    "gender": {"type": ["string", "null"], "enum": ["M", "F", null]},
+    "birth_year": {"type": ["integer", "null"]},
+    "death_year": {"type": ["integer", "null"]},
+    "generation": {"type": ["integer", "null"], "minimum": 1},
+    "clan_name": {"type": ["string", "null"]},
+    "location": {"type": ["string", "null"]},
+    "note": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}
