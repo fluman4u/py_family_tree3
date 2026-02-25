@@ -64,6 +64,21 @@ pip install pytest black flake8 mypy
 2. 启用 Flake8 代码检查
 3. 配置 Black 为代码格式化工具
 
+
+### 2.6 运行测试
+
+```bash
+pytest -q
+```
+
+当前回归测试覆盖：
+- 生成器 ID 唯一性
+- build_tree 幂等性
+- filter_subtree 边界条件（`max_depth=0`）
+- 解析器对非法 WBS / 未知列的拒绝
+- Web depth 参数校验
+- 测试数据约束（10 代；`1.1` 主支每代 2~3 兄弟节点；`1.3.3` 支链延伸至第10代并含“最右端随机加兄弟”场景）
+
 ## 3. 项目结构
 
 ```
@@ -167,8 +182,8 @@ def read_family_csv(path: str) -> Dict[int, Person]:
 运行代码检查：
 
 ```bash
-flake8 src/ web/ --max-line-length=88
-mypy src/ --ignore-missing-imports
+ruff check .
+mypy src web tests
 ```
 
 ### 4.6 代码格式化
@@ -193,16 +208,12 @@ pip install pytest
 
 ```
 tests/
-├── __init__.py
-├── test_model.py
+├── conftest.py
+├── test_generator.py
 ├── test_parser.py
-├── test_validate.py
 ├── test_tree.py
 ├── test_filter.py
-├── test_lineage.py
-├── test_migration.py
-└── fixtures/
-    └── test_family.csv
+└── test_web.py
 ```
 
 ### 5.3 测试示例
@@ -644,3 +655,15 @@ FLASK_DEBUG=1 python web/app.py
 - [pytest 文档](https://docs.pytest.org/)
 - [Black 代码格式化](https://black.readthedocs.io/)
 - [PEP 8 编码规范](https://peps.python.org/pep-0008/)
+
+
+## 附：Web 应用启动建议
+
+`web/app.py` 提供 `create_app()` 工厂方法，便于测试与后续接入 WSGI 服务。开发模式下可继续使用 `python web/app.py`。
+
+
+## 附：当前工程化分层
+
+- `src/repository.py`：仓储层（CSV 读取实现）
+- `src/service.py`：服务层（校验、建树、筛选、时间轴、API payload）
+- `web/app.py`：提供页面路由 + `/api/tree` JSON 接口

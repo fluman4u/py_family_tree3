@@ -1,5 +1,6 @@
-import yaml
 from typing import Optional
+
+import yaml
 
 
 class LineageSystem:
