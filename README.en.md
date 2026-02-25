@@ -37,3 +37,14 @@ MIT
 ```bash
 gunicorn -w 2 -b 0.0.0.0:5000 web.app:app
 ```
+
+
+## Debian/Linux packaging
+
+```bash
+pyinstaller --noconfirm desktop/main.spec
+chmod +x dist/family-tree
+./dist/family-tree
+```
+
+This spec bundles `web`/`src` modules and template/static/data files to avoid `ModuleNotFoundError: web`.

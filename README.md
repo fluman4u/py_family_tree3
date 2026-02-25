@@ -49,7 +49,17 @@ python web/app.py
 pyinstaller --onefile desktop/main.py
 ```
 
-生成 `dist/族谱可视化系统.exe`，双击即可运行。
+生成 `dist/族谱可视化系统.exe`（Windows 场景）。
+
+**Debian/Linux 打包与运行（推荐）**
+
+```bash
+pyinstaller --noconfirm desktop/main.spec
+chmod +x dist/family-tree
+./dist/family-tree
+```
+
+> 说明：`desktop/main.spec` 已包含 `web`/`src` 模块与模板/数据，避免 `ModuleNotFoundError: No module named web`。
 
 ## 项目结构
 

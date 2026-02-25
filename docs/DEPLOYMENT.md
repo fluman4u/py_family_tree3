@@ -141,6 +141,19 @@ python desktop/main.py
 pyinstaller --onefile --name "族谱可视化系统" desktop/main.py
 ```
 
+**Debian/Linux 推荐打包命令（使用 spec）**：
+
+```bash
+pyinstaller --noconfirm desktop/main.spec
+```
+
+**运行方式（Debian/Linux）**：
+
+```bash
+chmod +x dist/family-tree
+./dist/family-tree
+```
+
 **打包参数说明**：
 
 | 参数           | 说明         |
@@ -542,3 +555,19 @@ cp data/family.csv backup/family_$(date +%Y%m%d).csv
 git pull origin main
 pip install -r requirements.txt --upgrade
 ```
+
+
+### Q6: Linux 打包后报错 `No module named 'web'`？
+
+**原因**：PyInstaller 未正确收集 `web` 包或模板/静态资源。
+
+**解决方案**：
+
+1. 使用仓库内 `desktop/main.spec` 进行打包：
+
+```bash
+pyinstaller --noconfirm desktop/main.spec
+```
+
+2. 确保在项目根目录执行打包命令。
+3. 运行 `dist/family-tree`（Linux 可执行文件，不是 `.exe`）。
