@@ -23,7 +23,7 @@ pytest -q              # Run regression tests
 
 - Required CSV columns: `id`, `wbs`, `name`.
 - `parent_id` is optional and treated as a compatibility column; parent relation is inferred from `wbs`.
-- Current sample dataset (`data/family.csv`) is expanded to 10 generations: branch `1.1` keeps 3 siblings per generation (gen2~gen10), and branch `1.3` is also extended continuously to generation 10 with additional random sibling nodes across descendant generations.
+- Current sample dataset (`data/family.csv`) is expanded to 10 generations: branch `1.1` keeps 3 siblings per generation (gen2~gen10), and branch `1.3` is also extended continuously to generation 10; specifically, `1.3.3` now reaches generation 10 and adds random sibling nodes on the rightmost node per generation.
 
 ## License
 
