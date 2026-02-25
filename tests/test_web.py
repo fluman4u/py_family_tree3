@@ -24,3 +24,15 @@ def test_tree_api_returns_payload():
     data = resp.get_json()
     assert "nodes" in data
     assert "edges" in data
+
+
+def test_form_state_is_preserved_after_submit():
+    app, _, _ = create_app()
+    client = app.test_client()
+
+    resp = client.post("/", data={"root_wbs": "1.3", "depth": "4"})
+
+    html = resp.data.decode("utf-8")
+    assert resp.status_code == 200
+    assert 'value="1.3" selected' in html
+    assert 'name="depth" value="4"' in html

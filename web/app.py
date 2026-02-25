@@ -107,12 +107,16 @@ def create_app() -> Tuple[Flask, FamilyTreeService, str]:
     def index():
         error = None
         graph_file = default_file
+        selected_root_wbs = root_person.wbs
+        current_depth = 2
 
         if request.method == "POST":
-            root_wbs = request.form.get("root_wbs")
+            root_wbs = request.form.get("root_wbs") or root_person.wbs
             depth_raw = request.form.get("depth", "2")
+            selected_root_wbs = root_wbs
             try:
                 depth = _parse_depth(depth_raw)
+                current_depth = depth
                 subset = service.subtree(root_wbs=root_wbs, max_depth=depth)
                 graph_file = f"family_{uuid.uuid4().hex}.html"
                 output_path = os.path.join(static_dir, graph_file)
@@ -125,6 +129,10 @@ def create_app() -> Tuple[Flask, FamilyTreeService, str]:
                 )
             except ValueError as exc:
                 error = str(exc)
+                try:
+                    current_depth = int(depth_raw)
+                except (TypeError, ValueError):
+                    current_depth = 2
                 logger.warning(
                     "Invalid web input: root_wbs=%s depth=%s err=%s",
                     root_wbs,
@@ -145,6 +153,8 @@ def create_app() -> Tuple[Flask, FamilyTreeService, str]:
             error=error,
             min_depth=MIN_DEPTH,
             max_depth=MAX_DEPTH,
+            selected_root_wbs=selected_root_wbs,
+            current_depth=current_depth,
         )
 
     @app.route("/api/tree", methods=["GET"])

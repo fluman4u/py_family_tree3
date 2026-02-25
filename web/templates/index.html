@@ -68,14 +68,14 @@
     <label>选择根节点：</label>
     <select name="root_wbs">
       {% for p in persons %}
-        <option value="{{p.wbs}}">
+        <option value="{{p.wbs}}" {% if p.wbs == selected_root_wbs %}selected{% endif %}>
           {{p.wbs}} - {{p.name}}
         </option>
       {% endfor %}
     </select>
     <br>
     <label>展开层数：</label>
-    <input type="number" name="depth" value="2" min="{{min_depth}}" max="{{max_depth}}">
+    <input type="number" name="depth" value="{{current_depth}}" min="{{min_depth}}" max="{{max_depth}}">
     <br>
     <button type="submit">生成图谱</button>
     {% if error %}
