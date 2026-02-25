@@ -5,3 +5,5 @@ pyyaml
 pyinstaller
 selenium
 pillow
+
+pytest
