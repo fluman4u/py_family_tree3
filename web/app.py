@@ -1,21 +1,30 @@
+import logging
 import os
 import sys
 import uuid
-from typing import Dict, Tuple
+from typing import Tuple
 
-from flask import Flask, render_template, request
+from flask import Flask, jsonify, render_template, request
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.filter import filter_subtree
-from src.migration import build_migration_timeline
-from src.parser import read_family_csv
-from src.tree import build_tree
-from src.validate import validate_family
+from src.repository import CsvFamilyRepository
+from src.service import FamilyTreeService
 from src.visualize import visualize_family
 
 MIN_DEPTH = 0
 MAX_DEPTH = 10
+
+logger = logging.getLogger(__name__)
+
+
+def _configure_logging() -> None:
+    if logging.getLogger().handlers:
+        return
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s - %(message)s",
+    )
 
 
 def _parse_depth(value: str) -> int:
@@ -29,19 +38,18 @@ def _parse_depth(value: str) -> int:
     return depth
 
 
-def create_app() -> Tuple[Flask, Dict[int, object], str]:
+def create_app() -> Tuple[Flask, FamilyTreeService, str]:
+    _configure_logging()
     app = Flask(__name__)
 
-    persons = read_family_csv("data/family.csv")
-    validate_family(persons)
-    build_tree(persons)
+    repo = CsvFamilyRepository(path="data/family.csv")
+    persons = repo.load_persons()
+    service = FamilyTreeService.from_persons(persons)
 
     static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
     os.makedirs(static_dir, exist_ok=True)
 
-    root_person = next((p for p in persons.values() if p.parent_id is None), None)
-    if root_person is None:
-        raise RuntimeError("No root person found in data")
+    root_person = service.default_root()
 
     default_file = "family_default.html"
     default_path = os.path.join(static_dir, default_file)
@@ -52,7 +60,8 @@ def create_app() -> Tuple[Flask, Dict[int, object], str]:
         graph_file = default_file
 
         if request.method == "GET" and not os.path.exists(default_path):
-            subset = filter_subtree(persons, root_id=root_person.id, max_depth=2)
+            logger.info("Generating default family graph")
+            subset = service.subtree(root_id=root_person.id, max_depth=2)
             visualize_family(subset, default_path)
 
         if request.method == "POST":
@@ -60,17 +69,32 @@ def create_app() -> Tuple[Flask, Dict[int, object], str]:
             depth_raw = request.form.get("depth", "2")
             try:
                 depth = _parse_depth(depth_raw)
-                subset = filter_subtree(persons, root_wbs=root_wbs, max_depth=depth)
+                subset = service.subtree(root_wbs=root_wbs, max_depth=depth)
                 graph_file = f"family_{uuid.uuid4().hex}.html"
                 output_path = os.path.join(static_dir, graph_file)
                 visualize_family(subset, output_path)
+                logger.info(
+                    "Rendered subtree graph: root_wbs=%s depth=%s file=%s",
+                    root_wbs,
+                    depth,
+                    graph_file,
+                )
             except ValueError as exc:
                 error = str(exc)
+                logger.warning(
+                    "Invalid web input: root_wbs=%s depth=%s err=%s",
+                    root_wbs,
+                    depth_raw,
+                    exc,
+                )
+            except Exception as exc:  # monitoring hook
+                error = "生成图谱时发生内部错误"
+                logger.exception("Unexpected rendering failure: %s", exc)
 
-        timeline = build_migration_timeline(persons)
+        timeline = service.migration_timeline()
         return render_template(
             "index.html",
-            persons=persons.values(),
+            persons=service.persons.values(),
             timeline=timeline,
             graph_file=graph_file,
             error=error,
@@ -78,10 +102,34 @@ def create_app() -> Tuple[Flask, Dict[int, object], str]:
             max_depth=MAX_DEPTH,
         )
 
-    return app, persons, default_path
+    @app.route("/api/tree", methods=["GET"])
+    def tree_api():
+        root_wbs = request.args.get("root_wbs")
+        depth_raw = request.args.get("depth", "2")
+        gen_min_raw = request.args.get("gen_min")
+        gen_max_raw = request.args.get("gen_max")
+        try:
+            depth = _parse_depth(depth_raw)
+            gen_min = int(gen_min_raw) if gen_min_raw else None
+            gen_max = int(gen_max_raw) if gen_max_raw else None
+            payload = service.subtree_payload(
+                root_wbs=root_wbs or root_person.wbs,
+                max_depth=depth,
+                gen_min=gen_min,
+                gen_max=gen_max,
+            )
+            return jsonify(payload)
+        except ValueError as exc:
+            logger.warning("/api/tree bad request: %s", exc)
+            return jsonify({"error": str(exc)}), 400
+        except Exception as exc:  # monitoring hook
+            logger.exception("/api/tree unexpected error: %s", exc)
+            return jsonify({"error": "internal server error"}), 500
+
+    return app, service, default_path
 
 
-app, _persons, _default_path = create_app()
+app, _service, _default_path = create_app()
 
 
 if __name__ == "__main__":

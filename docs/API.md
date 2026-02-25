@@ -707,3 +707,23 @@ except Exception as e:
 - `depth` 必须为整数，且范围为 `0~10`。
 - 非法输入时返回页面并展示错误信息，不会导致服务崩溃。
 - POST 生成图文件使用 `family_<uuid>.html`，避免多请求覆盖同一静态文件。
+
+
+### 3.5 Web JSON API：`GET /api/tree`
+
+查询参数：
+- `root_wbs`：根节点 WBS（可选，默认根节点）
+- `depth`：展开深度，范围 0~10
+- `gen_min` / `gen_max`：代际过滤（可选）
+
+返回：
+- `nodes`：节点数组
+- `edges`：边数组（`from` / `to`）
+
+错误：
+- 参数非法返回 `400` + `{"error": "..."}`
+
+### 3.6 分层组件
+
+- `CsvFamilyRepository`（`src/repository.py`）：负责从 CSV 载入人员数据。
+- `FamilyTreeService`（`src/service.py`）：负责校验、建树、筛选、迁徙时间轴和 API payload 构建。

@@ -182,8 +182,8 @@ def read_family_csv(path: str) -> Dict[int, Person]:
 运行代码检查：
 
 ```bash
-flake8 src/ web/ --max-line-length=88
-mypy src/ --ignore-missing-imports
+ruff check .
+mypy src web tests
 ```
 
 ### 4.6 代码格式化
@@ -660,3 +660,10 @@ FLASK_DEBUG=1 python web/app.py
 ## 附：Web 应用启动建议
 
 `web/app.py` 提供 `create_app()` 工厂方法，便于测试与后续接入 WSGI 服务。开发模式下可继续使用 `python web/app.py`。
+
+
+## 附：当前工程化分层
+
+- `src/repository.py`：仓储层（CSV 读取实现）
+- `src/service.py`：服务层（校验、建树、筛选、时间轴、API payload）
+- `web/app.py`：提供页面路由 + `/api/tree` JSON 接口

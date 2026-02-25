@@ -71,7 +71,9 @@ def read_family_csv(path: str) -> Dict[int, Person]:
 
             wbs = row["wbs"]
             if not WBS_PATTERN.match(wbs):
-                raise ValueError(f"Line {lineno}: invalid wbs format {wbs!r}; expected digits separated by '.'")
+                raise ValueError(
+                    f"Line {lineno}: invalid wbs format {wbs!r}; expected digits separated by '.'"
+                )
 
             if any(segment.startswith("0") and segment != "0" for segment in wbs.split(".")):
                 raise ValueError(f"Line {lineno}: invalid wbs segment with leading zero in {wbs!r}")

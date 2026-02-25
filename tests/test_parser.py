@@ -26,3 +26,11 @@ def test_parser_rejects_unknown_columns(tmp_path):
 
     with pytest.raises(ValueError, match="unknown columns"):
         read_family_csv(str(csv_file))
+
+
+def test_parser_accepts_valid_csv():
+    persons = read_family_csv("data/family.csv")
+
+    assert persons
+    assert 1 in persons
+    assert persons[1].wbs == "1"

@@ -128,3 +128,12 @@
 - **第 1 周（稳定性优先）**：修复 generator ID、build_tree 幂等、web 输入校验；补 6~10 个回归测试。
 - **第 2 周（可维护性）**：引入 ruff/pytest/mypy 基线；提炼配置对象；补充数据 schema 与错误提示。
 
+
+
+## 工程化建议落地状态
+
+- ✅ 测试体系：补齐了解析正常路径、过滤 `gen_min/gen_max` 组合、迁徙时间轴排序、service/API 回归测试。
+- ✅ 代码质量与类型：已引入 `ruff` 与 `mypy` 基线配置（`pyproject.toml`），并通过本地检查。
+- ✅ 运行与部署：Web 增加结构化日志与异常日志埋点；文档补充 Gunicorn 生产运行建议。
+- ✅ 数据与 schema：补充 `data/family.schema.json`，并在数据格式文档中说明。
+- ✅ 架构演进（中期项先落地最小版本）：新增 repository/service 分层，Web 增加 `/api/tree` JSON 接口，支持前端异步渲染演进。

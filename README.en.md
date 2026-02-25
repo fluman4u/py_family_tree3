@@ -9,6 +9,8 @@ pip install -r requirements.txt
 python app.py          # CLI mode, outputs family.html
 python web/app.py      # Web mode at http://127.0.0.1:5000
 pytest -q              # Run regression tests
+ruff check .           # Lint + import sorting
+mypy src web tests    # Type checking baseline
 ```
 
 ## Key Updates in Current Version
@@ -28,3 +30,10 @@ pytest -q              # Run regression tests
 ## License
 
 MIT
+
+
+## Production run
+
+```bash
+gunicorn -w 2 -b 0.0.0.0:5000 web.app:app
+```

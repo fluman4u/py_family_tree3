@@ -128,4 +128,17 @@ MIT License
 pytest -q
 ```
 
-当前项目已包含 `tests/` 目录，覆盖生成器 ID 唯一性、建树幂等性、过滤边界、解析器校验与 Web 参数校验。
+当前项目已包含 `tests/` 目录，覆盖生成器 ID 唯一性、建树幂等性、过滤边界、解析器校验、迁徙时间轴排序、service 层与 Web 参数/API 校验。
+
+工程化质量检查：
+
+```bash
+ruff check .
+mypy src web tests
+```
+
+生产部署示例（Gunicorn）：
+
+```bash
+gunicorn -w 2 -b 0.0.0.0:5000 web.app:app
+```

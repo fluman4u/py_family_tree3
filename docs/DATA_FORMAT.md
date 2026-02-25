@@ -17,6 +17,10 @@ data/family.csv
 - 推荐编码：UTF-8 with BOM (`utf-8-sig`)
 - 此编码可确保 Excel 正确打开中文内容
 
+### 2.2.1 Schema 说明
+
+仓库提供了样例 schema 文件：`data/family.schema.json`，用于说明 CSV 每行记录的字段约束（类型/必填/模式）。
+
 ### 2.3 字段定义
 
 | 字段名        | 类型  | 必填  | 说明                   | 示例    |
