@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import Optional, List
+from dataclasses import dataclass, field
+from typing import Optional
 
 
 @dataclass
@@ -15,11 +15,7 @@ class Person:
     clan_name: Optional[str] = None
     location: Optional[str] = None
     note: Optional[str] = None
-    children: List["Person"] = None
-
-    def __post_init__(self):
-        if self.children is None:
-            self.children = []
+    children: list["Person"] = field(default_factory=list)
 
     @property
     def depth(self) -> int:

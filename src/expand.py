@@ -1,4 +1,5 @@
 from typing import Dict, List
+
 from .model import Person
 
 
