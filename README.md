@@ -94,7 +94,7 @@ id,wbs,name,gender,birth_year,death_year,generation,clan_name,location,note
 
 说明：`parent_id` 由系统根据 `wbs` 自动推导，CSV 中无需维护。解析器会严格校验必填列、未知列与 WBS 格式。
 
-默认测试数据（`data/family.csv`）已扩展至 **10 代**，并在每一代（第 2~10 代）提供 **3 个兄弟节点**，用于验证深层级与同代分支场景。
+默认测试数据（`data/family.csv`）已扩展至 **10 代**：主支 `1.1` 在第 2~10 代每代提供 **3 个兄弟节点**，并新增 `1.3` 支系连续拓展至第 10 代，用于验证深层级与多分支场景。
 
 ## 行辈配置
 
