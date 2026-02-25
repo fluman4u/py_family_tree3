@@ -1,9 +1,11 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 import os
+import pyvis
 
 project_root = os.path.abspath(os.path.join(SPECPATH, '..'))
 main_script = os.path.join(project_root, 'desktop', 'main.py')
+pyvis_templates = os.path.join(os.path.dirname(pyvis.__file__), 'templates')
 
 a = Analysis(
     [main_script],
@@ -13,6 +15,7 @@ a = Analysis(
         (os.path.join(project_root, 'data'), 'data'),
         (os.path.join(project_root, 'web', 'templates'), 'web/templates'),
         (os.path.join(project_root, 'web', 'static'), 'web/static'),
+        (pyvis_templates, 'pyvis/templates'),
     ],
     hiddenimports=[
         'web',

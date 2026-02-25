@@ -571,3 +571,17 @@ pyinstaller --noconfirm desktop/main.spec
 
 2. 确保在项目根目录执行打包命令。
 3. 运行 `dist/family-tree`（Linux 可执行文件，不是 `.exe`）。
+
+
+### Q7: Linux 打包后报错 `pyvis template.html not found`？
+
+**原因**：PyInstaller 未收集 `pyvis/templates`。
+
+**解决方案**：
+
+1. 使用仓库内最新 `desktop/main.spec`（已包含 `pyvis/templates`）。
+2. 重新打包：
+
+```bash
+pyinstaller --noconfirm desktop/main.spec
+```

@@ -110,8 +110,9 @@ def visualize_family(
             level=gen,
         )
 
+    node_ids = {p.id for p in persons}
     for p in persons:
-        if p.parent_id:
+        if p.parent_id and p.parent_id in node_ids:
             net.add_edge(p.parent_id, p.id)
 
     net.write_html(output_html)
