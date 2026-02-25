@@ -237,6 +237,17 @@ id,wbs,name,gender,birth_year,death_year,generation,clan_name,location,note
 | `null` | None |
 | `NULL` | None |
 
+
+### 2.8 默认测试数据约束（当前仓库）
+
+`data/family.csv` 当前采用如下测试数据约束：
+
+- 最大世代：10 代
+- 第 2~10 代：每代同父节点下均为 2~3 个兄弟节点（当前为 3）
+- `generation` 字段与 WBS 深度一致
+
+该数据用于覆盖深层树构建、代际筛选和可视化同代分支展示。
+
 ## 3. 行辈配置格式 (YAML)
 
 ### 3.1 文件位置

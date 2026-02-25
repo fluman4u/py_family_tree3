@@ -77,6 +77,7 @@ pytest -q
 - filter_subtree 边界条件（`max_depth=0`）
 - 解析器对非法 WBS / 未知列的拒绝
 - Web depth 参数校验
+- 测试数据约束（10 代、每代 2~3 兄弟节点）
 
 ## 3. 项目结构
 
@@ -207,16 +208,12 @@ pip install pytest
 
 ```
 tests/
-├── __init__.py
-├── test_model.py
+├── conftest.py
+├── test_generator.py
 ├── test_parser.py
-├── test_validate.py
 ├── test_tree.py
 ├── test_filter.py
-├── test_lineage.py
-├── test_migration.py
-└── fixtures/
-    └── test_family.csv
+└── test_web.py
 ```
 
 ### 5.3 测试示例
