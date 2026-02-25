@@ -1,9 +1,9 @@
-from src.parser import read_family_csv
-from src.validate import validate_family
-from src.tree import build_tree
 from src.filter import filter_subtree
-from src.visualize import visualize_family
 from src.migration import build_migration_timeline
+from src.parser import read_family_csv
+from src.tree import build_tree
+from src.validate import validate_family
+from src.visualize import visualize_family
 
 persons = read_family_csv("data/family.csv")
 validate_family(persons)

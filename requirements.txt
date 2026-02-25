@@ -5,3 +5,7 @@ pyyaml
 pyinstaller
 selenium
 pillow
+
+pytest
+ruff
+mypy
